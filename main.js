@@ -76,11 +76,9 @@
         var $input = document.querySelector(input);
         var isOpen = false;
 
-        $input.addEventListener('click', function() {
-            if (isOpen) {
-                $wrapper.classList.remove('ui-datepicker-wrapper-show');
-                isOpen = false;
-            } else {
+        $input.addEventListener('click', function(e) {
+            if (!isOpen) {
+                e.stopPropagation();
                 $wrapper.classList.add('ui-datepicker-wrapper-show');
                 var left = $input.offsetLeft;
                 var top = $input.offsetTop;
@@ -91,7 +89,15 @@
             }
         }, false);
 
+        document.onclick = function() {
+            if (isOpen) {
+                $wrapper.classList.remove('ui-datepicker-wrapper-show');
+                isOpen = false;
+            }
+        };
+
         $wrapper.addEventListener('click', function(e) {
+            e.stopPropagation();
             var $target = e.target;
             if (!$target.classList.contains('ui-datepicker-btn')) return;
 
@@ -100,15 +106,14 @@
             } else if ($target.classList.contains('ui-datepicker-next-btn')) { // 下一月
                 datepicker.render('next');
             }
-
         }, false);
 
         $wrapper.addEventListener('click', function(e) {
+            e.stopPropagation();
             var $target = e.target;
             if ($target.tagName.toLowerCase() !== 'td') return;
 
             var date = new Date(monthData.year, monthData.month - 1, $target.dataset.date);
-
             $input.value = format(date);
 
             $wrapper.classList.remove('ui-datepicker-wrapper-show');
@@ -135,7 +140,7 @@
         ret += padding(date.getDate());
 
         return ret;
-        
+
     }
 
 })();
